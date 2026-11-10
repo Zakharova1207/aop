@@ -14,11 +14,11 @@ import java.util.stream.IntStream;
 public class NotNullAspect {
     @Around("@annotation(notNullArgs)")
     public Object checkNull(ProceedingJoinPoint pjp, NotNullArgs notNullArgs) throws Throwable {
-        if (Arrays.stream(pjp.getArgs()).anyMatch(Objects::isNull)) {
-            int index = IntStream.range(0, pjp.getArgs().length)
-                    .filter(i -> pjp.getArgs()[i] == null)
-                    .findFirst()
-                    .orElse(-1);
+        int index = IntStream.range(0, pjp.getArgs().length)
+                .filter(i -> pjp.getArgs()[i] == null)
+                .findFirst()
+                .orElse(-1);
+        if (index < 0) {
             throw new IllegalArgumentException("Есть null параметры в "
                     + pjp.getSignature().getName() + " в arg[" + index + "]");
         }
